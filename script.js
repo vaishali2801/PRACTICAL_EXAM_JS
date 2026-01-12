@@ -1,4 +1,5 @@
-let books = [];
+let books = JSON.parse(localStorage.getItem("books")) || [];
+DisplayBook();
 
 document.getElementById("form").addEventListener("submit", function (e) {
     e.preventDefault();
@@ -25,15 +26,15 @@ document.getElementById("form").addEventListener("submit", function (e) {
     }
     const authors = document.getElementById("author").value.trim();
 
-if (!/^[A-Za-z\s]+$/.test(authors)) {
-    alert("Author name must contain only letters");
-    return;
-}
+    if (!/^[A-Za-z\s]+$/.test(authors)) {
+        alert("Author name must contain only letters");
+        return;
+    }
 
     if (authors.length < 3) {
-    alert("Author name must be at least 3 characters");
-    return;
-}
+        alert("Author name must be at least 3 characters");
+        return;
+    }
 
 
     const bookData = { name, author, price, year };
@@ -44,9 +45,14 @@ if (!/^[A-Za-z\s]+$/.test(authors)) {
         books[editIndex] = bookData;
         document.getElementById("editIndex").value = -1;
     }
+
+    saveToLocalStorage();   // 👈 ADD THIS
     this.reset();
     DisplayBook();
 });
+function saveToLocalStorage() {
+    localStorage.setItem("books", JSON.stringify(books));
+}
 // display book in task
 function DisplayBook() {
     const table = document.getElementById("BookTable");
@@ -89,5 +95,6 @@ function editBook(index) {
 // delete book from task
 function deleteBook(index) {
     books.splice(index, 1);
+    saveToLocalStorage();  
     DisplayBook();
 }
