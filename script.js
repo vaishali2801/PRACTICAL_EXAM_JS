@@ -1,100 +1,101 @@
-let books = JSON.parse(localStorage.getItem("books")) || [];
-DisplayBook();
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
+/* DISPLAY TASKS */
+function displayTask(filteredTasks = tasks) {
+    const table = document.getElementById("taskTable");
+    const output = document.getElementById("titlesOutput");
+
+    table.innerHTML = "";
+
+    filteredTasks.forEach((task, index) => {
+        table.innerHTML += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${task.name}</td>
+                <td>${task.description}</td>
+                <td>${task.priority}</td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1"
+                        onclick="editTask(${index})">Edit</button>
+                    <button class="btn btn-danger btn-sm"
+                        onclick="deleteTask(${index})">Delete</button>
+                </td>
+            </tr>
+        `;
+    });
+
+    const titles = tasks.map(t => t.name);
+    output.innerText = titles.length
+        ? "📌 Task Names: " + titles.join(", ")
+        : "Task names will appear here";
+}
+
+/* ADD & UPDATE TASK */
 document.getElementById("form").addEventListener("submit", function (e) {
     e.preventDefault();
 
-    const name = document.getElementById("name").value.trim();
-    const author = document.getElementById("author").value.trim();
-    const price = Number(document.getElementById("price").value);
-    const year = Number(document.getElementById("year").value);
+    const name = document.getElementById("task").value.trim();
+    const description = document.getElementById("description").value.trim();
+    const priority = document.getElementById("priority").value;
     const editIndex = document.getElementById("editIndex").value;
 
-    if (price <= 0 || price > 99999) {
-        alert("Price must be greater than 0");
+    if (name.length < 3) {
+        alert("Task name must be at least 3 characters");
         return;
     }
 
-    if (year < 1000 || year > 9999) {
-        alert("Year must be a 4-digit number");
+    if (description.length < 5) {
+        alert("Description must be at least 5 characters");
         return;
     }
 
-    if (name.length > 20 && editIndex === "-1") {
-        alert("Book name limit reached!");
-        return;
-    }
-    const authors = document.getElementById("author").value.trim();
-
-    if (!/^[A-Za-z\s]+$/.test(authors)) {
-        alert("Author name must contain only letters");
+    if (priority === "") {
+        alert("Please select priority");
         return;
     }
 
-    if (authors.length < 3) {
-        alert("Author name must be at least 3 characters");
-        return;
-    }
-
-
-    const bookData = { name, author, price, year };
+    const taskData = { name, description, priority };
 
     if (editIndex === "-1") {
-        books.push(bookData);
+        tasks.push(taskData);
     } else {
-        books[editIndex] = bookData;
+        tasks[editIndex] = taskData;
         document.getElementById("editIndex").value = -1;
     }
 
-    saveToLocalStorage();   // 👈 ADD THIS
+    localStorage.setItem("tasks", JSON.stringify(tasks));
     this.reset();
-    DisplayBook();
+    displayTask();
 });
-function saveToLocalStorage() {
-    localStorage.setItem("books", JSON.stringify(books));
-}
-// display book in task
-function DisplayBook() {
-    const table = document.getElementById("BookTable");
-    const output = document.getElementById("titlesOutput");
-    table.innerHTML = "";
 
-    books.forEach((book, index) => {
-        table.innerHTML += `
-        <tr>
-            <td>${index + 1}</td>
-            <td>${book.name}</td>
-            <td>${book.author}</td>
-            <td>${book.price}</td>
-            <td>${book.year}</td>
-            <td>
-                <button type="button" class="btn btn-info btn-sm" onclick="editBook(${index})">Edit</button>
-                <button type="button" class="btn btn-danger btn-sm" onclick="deleteBook(${index})">Delete</button>
-            </td>
-        </tr>
-`;
+/* EDIT TASK */
+function editTask(index) {
+    const task = tasks[index];
 
-    });
-
-    const titles = books.map(book => book.name);
-
-    output.innerText = titles.length
-        ? "📚 Book Names: " + titles.join(", ")
-        : "Book Names Will Appear Here";
-}
-// edit book in task manager
-function editBook(index) {
-    const book = books[index];
-
-    document.getElementById("name").value = book.name;
-    document.getElementById("author").value = book.author;
-    document.getElementById("price").value = book.price;
-    document.getElementById("year").value = book.year;
+    document.getElementById("task").value = task.name;
+    document.getElementById("description").value = task.description;
+    document.getElementById("priority").value = task.priority;
     document.getElementById("editIndex").value = index;
 }
-// delete book from task
-function deleteBook(index) {
-    books.splice(index, 1);
-    saveToLocalStorage();  
-    DisplayBook();
+
+/* DELETE TASK */
+function deleteTask(index) {
+    tasks.splice(index, 1);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+    displayTask();
 }
+
+/* FILTER BY PRIORITY */
+document.getElementById("filterPriority").addEventListener("change", function () {
+    const value = this.value;
+
+    if (value === "All") {
+        displayTask();
+    } else {
+        const filtered = tasks.filter(task => task.priority === value);
+        displayTask(filtered);
+    }
+});
+
+/* INITIAL LOAD */
+displayTask();
