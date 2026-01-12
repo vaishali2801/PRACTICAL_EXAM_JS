@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>practical exam js</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <section class="section">
+        <form id="form" class="form">
+            <h2 class="fw-bold fs-3 text-center mb-3 text-light">Task Manager</h2>
+            <input type="text" id="name" placeholder="Enter book name" required>
+            <br>
+            <input type="text" id="author" placeholder="Enter author name" required>
+            <br>
+            <input type="number" id="price" placeholder="Enter price" required>
+            <br>
+            <input type="number" id="year" placeholder="Enter year" required>
+            <br>
+            <input type="hidden" id="editIndex" value="-1">
+            <button class="button-33 btn-success" type="submit">Save</button>
+
+            <div class="table-responsive mt-4">
+                <table class="table table-secondary table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Book</th>
+                            <th>Author</th>
+                            <th>Price</th>
+                            <th>Year</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="BookTable"></tbody>
+                </table>
+            </div>
+
+            <div class="alert alert-info mt-3" id="titlesOutput">
+                <h3 class="fs-5">Book names---</h3>
+            </div>
+        </form>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+
+</body>
+
+</html>
